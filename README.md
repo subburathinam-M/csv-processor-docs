@@ -1,5 +1,4 @@
 
-readme_content = '''# CSV Data Duplicate Checker
 
 ![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
 ![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
@@ -7,7 +6,11 @@ readme_content = '''# CSV Data Duplicate Checker
 ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
 
-**📚 Live Demo:** [https://csvdataduplicate.netlify.app](https://csvdataduplicate.netlify.app)
+**📚 Live Demo:** [https://csvdataduplicate.netlify.app](https://csvdataduplicate.netlify.app)  
+**🔗 Documentation Site:** [https://subburathinam-m.github.io/csv-processor-docs/](https://subburathinam-m.github.io/csv-processor-docs/)  
+**🔗 Frontend Repo:** [https://github.com/subburathinam-M/csv-frontend](https://github.com/subburathinam-M/csv-frontend)  
+**🔗 Backend Repo:** [https://github.com/subburathinam-M/csv_processor_backend](https://github.com/subburathinam-M/csv_processor_backend)  
+**🔗 Documentation Repo:** [https://github.com/subburathinam-M/csv-processor-docs](https://github.com/subburathinam-M/csv-processor-docs)
 
 ---
 

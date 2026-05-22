@@ -1,0 +1,2316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="CSV Data Duplicate Checker & Processor - Full Stack Project Documentation">
+  <title>CSV Data Duplicate Checker & Processor | Portfolio & Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --primary-hover: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #10b981;
+      --bg: #030712;
+      --bg-elevated: #0b0f19;
+      --bg-card: rgba(15, 23, 42, 0.55);
+      --bg-code: #0d1117;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --border: rgba(148, 163, 184, 0.1);
+      --border-hover: rgba(99, 102, 241, 0.4);
+      --glass-bg: rgba(15, 23, 42, 0.4);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      --radius: 16px;
+      --radius-sm: 8px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 80px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text-main);
+      line-height: 1.6;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    /* Selection */
+    ::selection { background: rgba(99, 102, 241, 0.3); color: #fff; }
+
+    /* Canvas Background */
+    #hero-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Navigation */
+    .glass-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      background: rgba(3, 7, 18, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 1rem 0;
+      transition: var(--transition);
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .nav-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a:hover { color: var(--text-main); }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      transition: width 0.3s ease;
+    }
+    .nav-links a:hover::after { width: 100%; }
+
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-main);
+      cursor: pointer;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      padding: 6rem 0;
+      position: relative;
+    }
+
+    .section-header {
+      margin-bottom: 3rem;
+      text-align: center;
+    }
+
+    .section-label {
+      display: inline-block;
+      padding: 0.35rem 1rem;
+      border-radius: 100px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      color: var(--primary);
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #fff 30%, var(--text-muted));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 80px;
+      position: relative;
+    }
+
+    .hero-content {
+      max-width: 800px;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1.25rem;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-radius: 100px;
+      font-size: 0.85rem;
+      color: var(--primary);
+      margin-bottom: 2rem;
+      animation: fadeInDown 0.8s ease;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      line-height: 1.1;
+      animation: fadeInUp 0.8s ease 0.2s both;
+    }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--primary), var(--secondary), #8b5cf6);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradientShift 6s ease infinite;
+    }
+
+    .hero-description {
+      font-size: 1.25rem;
+      color: var(--text-muted);
+      margin-bottom: 2.5rem;
+      animation: fadeInUp 0.8s ease 0.4s both;
+    }
+
+    .tech-badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 2.5rem;
+      animation: fadeInUp 0.8s ease 0.5s both;
+    }
+
+    .tech-badge {
+      padding: 0.5rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .tech-badge:hover {
+      border-color: var(--border-hover);
+      color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    .cta-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      animation: fadeInUp 0.8s ease 0.6s both;
+    }
+
+    .btn {
+      padding: 0.875rem 2rem;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      border: none;
+      font-family: inherit;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      color: white;
+      box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--text-main);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: var(--border-hover);
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* Glass Card */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius);
+      padding: 2rem;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+      transition: left 0.7s;
+    }
+
+    .glass-card:hover::before { left: 100%; }
+
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(99, 102, 241, 0.1);
+    }
+
+    /* 3D Tilt Card */
+    .tilt-card {
+      transform-style: preserve-3d;
+      perspective: 1000px;
+    }
+
+    .tilt-inner {
+      transition: transform 0.1s ease-out;
+      transform-style: preserve-3d;
+    }
+
+    /* Grid */
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+
+    @media (max-width: 900px) {
+      .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+        .mobile-menu-btn { display: block; }
+    }
+
+    /* =========================
+   EXTRA RESPONSIVE DESIGN
+========================= */
+
+/* Large Tablets */
+@media (max-width: 1024px) {
+
+  .container {
+    padding: 0 1.5rem;
+  }
+
+  .section-title {
+    font-size: 2.2rem;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .grid-2,
+  .grid-3,
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* Tablets */
+@media (max-width: 768px) {
+
+  section {
+    padding: 4rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .hero {
+    padding-top: 120px;
+    min-height: auto;
+  }
+
+  .hero h1 {
+    font-size: 2.4rem;
+    line-height: 1.2;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .glass-card {
+    padding: 1.5rem;
+  }
+
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-menu-btn {
+    display: block;
+  }
+
+  .cta-group {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .tech-badges {
+    justify-content: center;
+  }
+
+  .flow-step {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .flow-connector {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+ .timeline {
+  position: relative;
+  padding-left: 3rem;
+}
+
+  .timeline-item {
+    padding-left: 1.5rem;
+  }
+
+  .code-content {
+    font-size: 0.75rem;
+  }
+}
+
+
+/* Small Phones */
+@media (max-width: 480px) {
+
+  html,
+  body {
+    overflow-x: hidden;
+  }
+
+  .container {
+    padding: 0 0.8rem;
+  }
+
+  .hero h1 {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 0.95rem;
+  }
+
+  .section-title {
+    font-size: 1.7rem;
+  }
+
+  .glass-card {
+    padding: 1rem;
+    border-radius: 12px;
+  }
+
+  .tech-badge {
+    font-size: 0.75rem;
+    padding: 0.45rem 0.7rem;
+  }
+
+  .btn {
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .flow-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .flow-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .code-content {
+    font-size: 0.7rem;
+    padding: 1rem;
+  }
+
+  .nav-container {
+    padding: 0 1rem;
+  }
+
+  .mobile-menu {
+    padding: 1rem;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+
+/* Very Small Phones */
+@media (max-width: 360px) {
+
+  .hero h1 {
+    font-size: 1.7rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .hero-description {
+    font-size: 0.85rem;
+  }
+
+  .btn {
+    font-size: 0.8rem;
+  }
+
+  .glass-card {
+    padding: 0.9rem;
+  }
+
+  .code-content {
+    font-size: 0.65rem;
+  }
+}
+
+    /* Code Block */
+    .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin: 1.5rem 0;
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .code-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      background: rgba(255,255,255,0.03);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .code-lang {
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .code-copy {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.8rem;
+      transition: color 0.2s;
+    }
+
+    .code-copy:hover { color: var(--text-main); }
+
+    .code-content {
+      padding: 1.25rem;
+      overflow-x: auto;
+      white-space: pre;
+      color: #abb2bf;
+    }
+
+    .token-keyword { color: #c678dd; }
+    .token-string { color: #98c379; }
+    .token-function { color: #61afef; }
+    .token-comment { color: #5c6370; font-style: italic; }
+    .token-number { color: #d19a66; }
+    .token-class { color: #e5c07b; }
+    .token-operator { color: #56b6c2; }
+
+    /* Architecture Flow */
+    .flow-container {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 700px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+    .flow-step {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.5rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .flow-connector {
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(180deg, var(--primary), var(--secondary));
+      margin-left: 2.5rem;
+      opacity: 0.5;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .flow-connector::after {
+      content: '';
+      position: absolute;
+      top: -100%; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(255,255,255,0.5);
+      animation: flowDown 2s linear infinite;
+    }
+
+    .flow-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .flow-icon svg { width: 28px; height: 28px; color: white; }
+
+    .flow-content h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-main);
+    }
+
+    .flow-content p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Timeline */
+    .timeline {
+      position: relative;
+      padding-left: 2rem;
+    }
+
+   .timeline::before {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(
+    180deg,
+    var(--primary),
+    var(--secondary),
+    transparent
+  );
+}
+
+   .timeline-item {
+  position: relative;
+  padding-bottom: 2.5rem;
+  padding-left: 2.5rem;
+}
+
+    .timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -1.15rem;
+  top: 0.4rem;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--bg);
+  border: 3px solid var(--primary);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.2);
+  z-index: 2;
+}
+
+    .timeline-item h4 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-main);
+    }
+
+    .timeline-item p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Q&A Accordion */
+    .qa-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .qa-item:hover { border-color: var(--border-hover); }
+
+    .qa-question {
+      padding: 1.25rem;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-weight: 600;
+      color: var(--text-main);
+      background: rgba(255,255,255,0.02);
+      transition: background 0.2s;
+    }
+
+    .qa-question:hover { background: rgba(255,255,255,0.04); }
+
+    .qa-icon {
+      width: 20px; height: 20px;
+      transition: transform 0.3s ease;
+      color: var(--primary);
+    }
+
+    .qa-item.active .qa-icon { transform: rotate(180deg); }
+
+    .qa-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s ease, padding 0.4s ease;
+    }
+
+    .qa-item.active .qa-answer {
+      max-height: 2000px;
+      padding: 0 1.25rem 1.25rem;
+    }
+
+    .answer-level {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.02);
+      border-left: 3px solid var(--primary);
+    }
+
+    .answer-level h5 {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+
+    .answer-level p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    /* Folder Tree */
+    .tree {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.9rem;
+      line-height: 1.8;
+      color: var(--text-muted);
+    }
+
+    .tree-line { display: block; }
+    .tree-branch { color: var(--text-dim); }
+    .tree-file { color: var(--text-muted); }
+    .tree-folder { color: #e5c07b; }
+    .tree-ext { color: var(--primary); }
+
+    /* Skills */
+    .skill-card {
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+
+    .skill-icon {
+      width: 64px; height: 64px;
+      margin: 0 auto 1.5rem;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(236,72,153,0.2));
+      border: 1px solid rgba(99,102,241,0.2);
+    }
+
+    .skill-icon svg { width: 32px; height: 32px; color: var(--primary); }
+
+    .skill-card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .skill-card p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes flowDown {
+      from { top: -100%; }
+      to { top: 100%; }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 3rem 0;
+      text-align: center;
+      color: var(--text-dim);
+      font-size: 0.9rem;
+    }
+
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-links a:hover { color: var(--primary); }
+
+    .footer-stack {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+    }
+
+    .footer-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 60px; left: 0; right: 0;
+      background: rgba(3,7,18,0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      z-index: 999;
+    }
+
+    .mobile-menu.active { display: block; }
+    .mobile-menu a {
+      display: block;
+      padding: 0.75rem 0;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Utility */
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .highlight-box {
+      padding: 1.5rem;
+      border-radius: var(--radius-sm);
+      background: rgba(99, 102, 241, 0.05);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      margin: 1rem 0;
+    }
+
+    .highlight-box h4 {
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .tag-green { background: rgba(16, 185, 129, 0.1); color: var(--accent); border: 1px solid rgba(16,185,129,0.2); }
+    .tag-blue { background: rgba(99, 102, 241, 0.1); color: var(--primary); border: 1px solid rgba(99,102,241,0.2); }
+    .tag-pink { background: rgba(236, 72, 153, 0.1); color: var(--secondary); border: 1px solid rgba(236,72,153,0.2); }
+    .tag-amber { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+
+    .method-post {
+      display: inline-block;
+      padding: 0.2rem 0.6rem;
+      border-radius: 4px;
+      background: rgba(16, 185, 129, 0.15);
+      color: var(--accent);
+      font-weight: 700;
+      font-size: 0.8rem;
+      font-family: 'Fira Code', monospace;
+    }
+  </style>
+<base target="_blank">
+</head>
+<body>
+
+  <canvas id="hero-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav class="glass-nav">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
+        CSV Processor
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about">About</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#frontend">Frontend</a></li>
+        <li><a href="#backend">Backend</a></li>
+        <li><a href="#pandas">Pandas</a></li>
+        <li><a href="#api">API</a></li>
+        <li><a href="#interview">Q&A</a></li>
+      </ul>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#about" onclick="toggleMobileMenu()">About</a>
+      <a href="#architecture" onclick="toggleMobileMenu()">Architecture</a>
+      <a href="#frontend" onclick="toggleMobileMenu()">Frontend</a>
+      <a href="#backend" onclick="toggleMobileMenu()">Backend</a>
+      <a href="#pandas" onclick="toggleMobileMenu()">Pandas</a>
+      <a href="#api" onclick="toggleMobileMenu()">API</a>
+      <a href="#interview" onclick="toggleMobileMenu()">Q&A</a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-badge">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        Full Stack Data Processing Application
+      </div>
+      <h1>
+        CSV Data Duplicate<br>
+        <span class="gradient-text">Checker & Processor</span>
+      </h1>
+      <p class="hero-description">
+        A production-ready full-stack application that intelligently detects, analyzes, and cleans duplicate records from CSV datasets using React, FastAPI, and Pandas.
+      </p>
+      <div class="tech-badges">
+        <span class="tech-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> React 19</span>
+        <span class="tech-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg> Vite</span>
+        <span class="tech-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg> Axios</span>
+        <span class="tech-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg> FastAPI</span>
+        <span class="tech-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M2 12h20"/><path d="m4.93 4.93 14.14 14.14"/><path d="m19.07 4.93-14.14 14.14"/></svg> Pandas</span>
+        <span class="tech-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Netlify</span>
+        <span class="tech-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg> Render</span>
+      </div>
+      <div class="cta-group">
+        <a href="#architecture" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          Explore Documentation
+        </a>
+        <a href="https://csvdataduplicate.netlify.app" target="_blank" class="btn btn-secondary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          Live Demo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <div class="container">
+
+    <!-- About Project -->
+    <section id="about" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Project Overview</span>
+        <h2 class="section-title">About This Project</h2>
+        <p class="section-subtitle">Why I built this, what problems it solves, and how it fits into real-world data workflows.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-hover));display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.75rem;font-size:1.25rem;">Why I Built This</h3>
+            <p style="color:var(--text-muted);font-size:0.95rem;">Manual CSV cleaning in Excel is repetitive and error-prone. I wanted a tool that instantly splits duplicates and unique rows with accurate statistics, eliminating human error from data preparation workflows.</p>
+          </div>
+        </div>
+
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--secondary),#be185d);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.75rem;font-size:1.25rem;">Real-World Use Case</h3>
+            <p style="color:var(--text-muted);font-size:0.95rem;">Marketing teams often merge lead lists from multiple sources, creating duplicates. This tool processes those CSVs automatically, giving them clean unique lists for campaigns and separate duplicate logs for auditing.</p>
+          </div>
+        </div>
+
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#059669);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.75rem;font-size:1.25rem;">Problems Solved</h3>
+            <p style="color:var(--text-muted);font-size:0.95rem;">Eliminates manual filtering, handles large files via streaming, provides instant analytics (total/duplicate/unique counts), and exports results in multiple formats (individual Excel files + ZIP archive).</p>
+          </div>
+        </div>
+
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.75rem;font-size:1.25rem;">Data Cleaning Importance</h3>
+            <p style="color:var(--text-muted);font-size:0.95rem;">Dirty data costs companies millions in bad decisions. By automating duplicate detection at the ingestion layer, this tool ensures downstream analytics, ML models, and reports are built on trustworthy foundations.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Architecture -->
+    <section id="architecture" class="reveal">
+      <div class="section-header">
+        <span class="section-label">System Design</span>
+        <h2 class="section-title">Full Project Architecture</h2>
+        <p class="section-subtitle">End-to-end data flow from user upload to processed download.</p>
+      </div>
+
+      <div class="flow-container">
+        <div class="flow-step glass-card">
+          <div class="flow-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+          <div class="flow-content">
+            <h3>Frontend (React + Vite)</h3>
+            <p>User interacts with drag-and-drop zone built with react-dropzone. UI components render conditionally based on upload state. Axios handles the HTTP POST request with multipart/form-data.</p>
+          </div>
+        </div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-step glass-card">
+          <div class="flow-icon" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+          <div class="flow-content">
+            <h3>API Communication (Axios)</h3>
+            <p>Axios sends the CSV as a File inside FormData to the FastAPI backend. CORS preflight is handled by FastAPI middleware. Custom headers return statistics (X-Total-Rows, etc.) in the response.</p>
+          </div>
+        </div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-step glass-card">
+          <div class="flow-icon" style="background:linear-gradient(135deg,#059669,#047857);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <div class="flow-content">
+            <h3>FastAPI Backend</h3>
+            <p>FastAPI receives the UploadFile, validates the .csv extension, reads bytes into memory, and routes to the Pandas service layer. Uses async/await for non-blocking I/O during file handling.</p>
+          </div>
+        </div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-step glass-card">
+          <div class="flow-icon" style="background:linear-gradient(135deg,#ec4899,#db2777);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></div>
+          <div class="flow-content">
+            <h3>Pandas Processing Engine</h3>
+            <p>pd.read_csv() ingests the file from BytesIO. duplicated(keep=False) flags all duplicate occurrences. drop_duplicates() extracts unique rows. Results are written to Excel buffers and compressed into a ZIP.</p>
+          </div>
+        </div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-step glass-card">
+          <div class="flow-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+          <div class="flow-content">
+            <h3>CSV Analysis & Duplicate Removal</h3>
+            <p>Three output files are generated: duplicates.xlsx (all duplicate rows), unique.xlsx (cleaned dataset), and duplicate_grouped.xlsx (comma-joined values for quick scanning).</p>
+          </div>
+        </div>
+        <div class="flow-connector"></div>
+
+        <div class="flow-step glass-card">
+          <div class="flow-icon" style="background:linear-gradient(135deg,#6366f1,#4f46e5);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+          <div class="flow-content">
+            <h3>Response Back to Frontend</h3>
+            <p>StreamingResponse sends the ZIP bytes back with Content-Disposition inline. Frontend receives the blob, generates object URLs, and renders download cards for each file plus a master ZIP button.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Frontend Concepts -->
+    <section id="frontend" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Client Side</span>
+        <h2 class="section-title">Frontend Concepts Used</h2>
+        <p class="section-subtitle">Deep dive into the React implementation, state management, and UI patterns.</p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">1. React Components & JSX</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">The UI is broken into 4 pure functional components: Header, DropZoneArea, StatsDashboard, and FileDownloads. Each handles a single responsibility and receives data via props.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">jsx</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content"><span class="token-keyword">import</span> React <span class="token-keyword">from</span> <span class="token-string">'react'</span>;
+<span class="token-keyword">import</span> { Database, Copy, CheckCircle } <span class="token-keyword">from</span> <span class="token-string">'lucide-react'</span>;
+
+<span class="token-keyword">const</span> <span class="token-function">StatsDashboard</span> = ({ stats }) => {
+  <span class="token-keyword">return</span> (
+    &lt;div className=<span class="token-string">"stats-container"</span>&gt;
+      &lt;div className=<span class="token-string">"stats-grid"</span>&gt;
+        &lt;div className=<span class="token-string">"glass-panel stat-card"</span>&gt;
+          &lt;Database className=<span class="token-string">"stat-icon"</span> /&gt;
+          &lt;div className=<span class="token-string">"stat-info"</span>&gt;
+            &lt;h3&gt;Total Rows&lt;/h3&gt;
+            &lt;p&gt;{stats.total.toLocaleString()}&lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  );
+};</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">2. Props vs State</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;"><strong>Props</strong> pass data down the tree (e.g., <code>stats</code> object into StatsDashboard). <strong>State</strong> lives in parent App.jsx, tracking the uploaded file, processing status, API response, and raw ZIP blob.</p>
+        <div class="highlight-box">
+          <h4>Key Difference</h4>
+          <p>Props are read-only and passed by parent. State is mutable and local to the component. In this project, DropZoneArea receives an <code>onDrop</code> prop (callback), while App.jsx owns the <code>files</code> and <code>stats</code> state.</p>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">3. File Upload with react-dropzone</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">Drag-and-drop is implemented via react-dropzone with MIME type filtering, active state styling, and useCallback memoization to prevent unnecessary re-renders.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">jsx</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content"><span class="token-keyword">const</span> { getRootProps, getInputProps, isDragActive } = <span class="token-function">useDropzone</span>({
+  onDrop: onDropCallback,
+  accept: {
+    <span class="token-string">'text/csv'</span>: [<span class="token-string">'.csv'</span>],
+    <span class="token-string">'application/vnd.ms-excel'</span>: [<span class="token-string">'.csv'</span>]
+  },
+  multiple: <span class="token-keyword">false</span>
+});</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">4. Axios API Integration</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">Axios POSTs a FormData object containing the CSV File. The responseType is set to <code>'blob'</code> to handle binary ZIP data, and custom headers expose row statistics.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">javascript</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content"><span class="token-keyword">const</span> formData = <span class="token-keyword">new</span> <span class="token-class">FormData</span>();
+formData.<span class="token-function">append</span>(<span class="token-string">'file'</span>, acceptedFiles[0]);
+
+<span class="token-keyword">const</span> response = <span class="token-keyword">await</span> axios.<span class="token-function">post</span>(
+  <span class="token-string">'https://api.example.com/api/v1/csv/process'</span>,
+  formData,
+  { headers: { <span class="token-string">'Content-Type'</span>: <span class="token-string">'multipart/form-data'</span> }, responseType: <span class="token-string">'blob'</span> }
+);</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">5. Async/Await & Error Handling</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">The upload handler is async. It sets a loading state, awaits the API call, parses response headers for stats, generates blob URLs for downloads, and catches errors to display user-friendly messages.</p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">6. Conditional Rendering</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">The UI adapts to state: dropzone shows active styling during drag, a spinner renders while <code>loading</code> is true, stats cards appear only after data returns, and download buttons are disabled until files exist.</p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">7. Vite Build Tool</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">Vite provides instant Hot Module Replacement (HMR), lightning-fast builds via Rollup, and out-of-the-box support for React 19, JSX, and modern ES modules. The dev server starts in milliseconds compared to webpack-based tools.</p>
+      </div>
+    </section>
+
+    <!-- Backend Concepts -->
+    <section id="backend" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Server Side</span>
+        <h2 class="section-title">Backend Concepts Used</h2>
+        <p class="section-subtitle">FastAPI architecture, routing, middleware, and async request handling.</p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">1. FastAPI Architecture</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">FastAPI is a modern, high-performance Python web framework. It uses Python type hints for automatic request validation and generates interactive OpenAPI docs at <code>/docs</code>.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content"><span class="token-keyword">from</span> fastapi <span class="token-keyword">import</span> FastAPI
+
+app = <span class="token-function">FastAPI</span>(
+    title=<span class="token-string">"CSV Processor API"</span>,
+    description=<span class="token-string">"Upload CSV → get ZIP with 3 Excel files"</span>,
+    version=<span class="token-string">"1.0.0"</span>,
+)</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">2. API Routers</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">Routers modularize endpoints. The CSV router is mounted at <code>/api/v1/csv</code> with a <code>/process</code> endpoint, keeping main.py clean and allowing future versioning (v2, v3) without refactoring.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content"><span class="token-keyword">from</span> fastapi <span class="token-keyword">import</span> APIRouter
+
+router = <span class="token-function">APIRouter</span>(prefix=<span class="token-string">"/api/v1/csv"</span>, tags=[<span class="token-string">"CSV Processor"</span>])
+
+<span class="token-comment"># In main.py:</span>
+app.<span class="token-function">include_router</span>(csv_router)</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">3. File Upload Handling</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">FastAPI's UploadFile reads the incoming multipart stream. We validate the .csv extension, read bytes asynchronously, and pass them to Pandas via BytesIO (no disk writes for security and speed).</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content"><span class="token-keyword">from</span> fastapi <span class="token-keyword">import</span> UploadFile, File, HTTPException
+
+<span class="token-keyword">if</span> <span class="token-keyword">not</span> file.filename.<span class="token-function">endswith</span>(<span class="token-string">".csv"</span>):
+    <span class="token-keyword">raise</span> <span class="token-function">HTTPException</span>(status_code=400, detail=<span class="token-string">"Only .csv files are allowed"</span>)
+
+file_bytes = <span class="token-keyword">await</span> file.<span class="token-function">read</span>()</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">4. CORS Middleware</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">Cross-Origin Resource Sharing allows the Netlify frontend to call the Render backend. We explicitly whitelist the production origin and expose custom headers for row statistics.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content">app.<span class="token-function">add_middleware</span>(
+    CORSMiddleware,
+    allow_origins=[<span class="token-string">"https://csvdataduplicate.netlify.app"</span>],
+    allow_credentials=<span class="token-keyword">True</span>,
+    allow_methods=[<span class="token-string">"*"</span>],
+    allow_headers=[<span class="token-string">"*"</span>],
+    expose_headers=[<span class="token-string">"X-Total-Rows"</span>, <span class="token-string">"X-Duplicate-Rows"</span>, <span class="token-string">"X-Unique-Rows"</span>],
+)</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">5. StreamingResponse & ZIP Export</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">Instead of saving files to disk, we stream the ZIP buffer directly to the client. This reduces memory overhead on the server and improves download start times.</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content"><span class="token-keyword">return</span> <span class="token-function">StreamingResponse</span>(
+    zip_buffer,
+    media_type=<span class="token-string">"application/zip"</span>,
+    headers=headers,
+)</div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">6. Backend Folder Structure</h3>
+        <div class="tree" style="background:var(--bg-code);padding:1.5rem;border-radius:var(--radius-sm);border:1px solid var(--border);">
+          <span class="tree-line"><span class="tree-branch">└──</span> <span class="tree-folder">backend/</span></span>
+          <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-file">main.py</span> <span class="tree-ext">← FastAPI app instance, CORS, router mount</span></span>
+          <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-file">requirements.txt</span> <span class="tree-ext">← fastapi, uvicorn, pandas, openpyxl</span></span>
+          <span class="tree-line">    <span class="tree-branch">└──</span> <span class="tree-folder">app/</span></span>
+          <span class="tree-line">        <span class="tree-branch">├──</span> <span class="tree-file">__init__.py</span></span>
+          <span class="tree-line">        <span class="tree-branch">├──</span> <span class="tree-folder">routers/</span></span>
+          <span class="tree-line">        <span class="tree-branch">│</span>   <span class="tree-branch">├──</span> <span class="tree-file">csv_router.py</span> <span class="tree-ext">← /process endpoint, validation</span></span>
+          <span class="tree-line">        <span class="tree-branch">│</span>   <span class="tree-branch">└──</span> <span class="tree-file">__init__.py</span></span>
+          <span class="tree-line">        <span class="tree-branch">├──</span> <span class="tree-folder">services/</span></span>
+          <span class="tree-line">        <span class="tree-branch">│</span>   <span class="tree-branch">├──</span> <span class="tree-file">csv_service.py</span> <span class="tree-ext">← Pandas logic, ZIP generation</span></span>
+          <span class="tree-line">        <span class="tree-branch">│</span>   <span class="tree-branch">└──</span> <span class="tree-file">__init__.py</span></span>
+          <span class="tree-line">        <span class="tree-branch">└──</span> <span class="tree-folder">schemas/</span></span>
+          <span class="tree-line">            <span class="tree-branch">└──</span> <span class="tree-file">response_schema.py</span> <span class="tree-ext">← Pydantic models</span></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pandas Section (CRITICAL) -->
+    <section id="pandas" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Data Engine</span>
+        <h2 class="section-title">Pandas Concepts Deep Dive</h2>
+        <p class="section-subtitle">The core processing engine. Every Pandas method used, explained with syntax, real usage, and performance context.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card">
+          <h3 style="margin-bottom:0.75rem;"><span class="tag tag-blue">I/O</span> pd.read_csv()</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">Reads CSV data into a DataFrame. In this project, it reads directly from a BytesIO stream without touching the disk.</p>
+          <div class="code-block" style="margin:0;">
+            <div class="code-header"><span class="code-lang">python</span></div>
+            <div class="code-content">df = pd.<span class="token-function">read_csv</span>(BytesIO(file_bytes))</div>
+          </div>
+          <div class="highlight-box" style="margin-top:1rem;">
+            <h4>Why Used</h4>
+            <p style="font-size:0.85rem;">By wrapping raw bytes in BytesIO, we process files entirely in memory. This is 10-100x faster than disk I/O and essential for serverless deployments like Render where filesystem writes are ephemeral.</p>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h3 style="margin-bottom:0.75rem;"><span class="tag tag-pink">Detection</span> duplicated()</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">Returns a boolean Series indicating duplicate rows. <code>keep=False</code> marks ALL occurrences, not just subsequent ones.</p>
+          <div class="code-block" style="margin:0;">
+            <div class="code-header"><span class="code-lang">python</span></div>
+            <div class="code-content">duplicate_mask = df.<span class="token-function">duplicated</span>(keep=<span class="token-keyword">False</span>)
+df_duplicates = df[duplicate_mask]</div>
+          </div>
+          <div class="highlight-box" style="margin-top:1rem;">
+            <h4>Key Distinction</h4>
+            <p style="font-size:0.85rem;"><code>keep='first'</code> marks duplicates except the first occurrence. <code>keep=False</code> marks every duplicate row, which is what we need to show users the complete duplicate picture.</p>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h3 style="margin-bottom:0.75rem;"><span class="tag tag-green">Cleaning</span> drop_duplicates()</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">Removes duplicate rows and returns a cleaned DataFrame. <code>keep='first'</code> retains the original occurrence.</p>
+          <div class="code-block" style="margin:0;">
+            <div class="code-header"><span class="code-lang">python</span></div>
+            <div class="code-content">df_unique = df.<span class="token-function">drop_duplicates</span>(keep=<span class="token-string">'first'</span>).<span class="token-function">reset_index</span>(drop=<span class="token-keyword">True</span>)</div>
+          </div>
+          <div class="highlight-box" style="margin-top:1rem;">
+            <h4>Performance Note</h4>
+            <p style="font-size:0.85rem;">Pandas uses hash-based algorithms under the hood (O(n) average time), making it vastly faster than nested Python loops (O(n²)) for deduplication.</p>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h3 style="margin-bottom:0.75rem;"><span class="tag tag-amber">Structure</span> DataFrame</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">A 2D labeled data structure with columns of potentially different types. Think of it as an in-memory Excel sheet powered by NumPy arrays.</p>
+          <div class="code-block" style="margin:0;">
+            <div class="code-header"><span class="code-lang">python</span></div>
+            <div class="code-content"><span class="token-comment"># Shape gives (rows, columns)</span>
+rows, cols = df.shape
+<span class="token-comment"># len() gives row count</span>
+total = <span class="token-function">len</span>(df)
+<span class="token-comment"># Column names</span>
+<span class="token-function">print</span>(df.columns.tolist())</div>
+          </div>
+          <div class="highlight-box" style="margin-top:1rem;">
+            <h4>Memory Layout</h4>
+            <p style="font-size:0.85rem;">DataFrames store data in contiguous memory blocks (C-arrays). This cache-friendly layout enables vectorized operations that run at compiled C speed, not interpreted Python speed.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="glass-card" style="margin-top:1.5rem;">
+        <h3 style="margin-bottom:1rem;font-size:1.3rem;">Complete Pandas Service Code</h3>
+        <p style="color:var(--text-muted);margin-bottom:1rem;">Below is the actual production code from <code>csv_service.py</code>, annotated line-by-line to explain the data flow:</p>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">python</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content"><span class="token-keyword">import</span> pandas <span class="token-keyword">as</span> pd
+<span class="token-keyword">import</span> zipfile
+<span class="token-keyword">from</span> io <span class="token-keyword">import</span> BytesIO
+
+<span class="token-keyword">def</span> <span class="token-function">process_csv</span>(file_bytes: bytes):
+    <span class="token-comment"># Step 1: Read raw bytes into DataFrame without disk I/O</span>
+    df = pd.<span class="token-function">read_csv</span>(BytesIO(file_bytes))
+
+    <span class="token-comment"># Step 2: Boolean mask — True for ALL duplicate rows</span>
+    duplicate_mask = df.<span class="token-function">duplicated</span>(keep=<span class="token-keyword">False</span>)
+    df_duplicates = df[duplicate_mask].<span class="token-function">reset_index</span>(drop=<span class="token-keyword">True</span>)
+
+    <span class="token-comment"># Step 3: Drop duplicates, keep first occurrence only</span>
+    df_unique = df.<span class="token-function">drop_duplicates</span>(keep=<span class="token-string">'first'</span>).<span class="token-function">reset_index</span>(drop=<span class="token-keyword">True</span>)
+
+    <span class="token-comment"># Step 4: Create single-column grouped view for quick scanning</span>
+    <span class="token-keyword">if</span> <span class="token-keyword">not</span> df_duplicates.empty:
+        df_grouped = df_duplicates.<span class="token-function">drop_duplicates</span>().copy()
+        df_grouped[<span class="token-string">"combined"</span>] = df_grouped.<span class="token-function">astype</span>(str).<span class="token-function">agg</span>(<span class="token-string">","</span>.join, axis=1)
+        df_single_col = df_grouped[[<span class="token-string">"combined"</span>]]
+    <span class="token-keyword">else</span>:
+        df_single_col = pd.<span class="token-function">DataFrame</span>(columns=[<span class="token-string">"combined"</span>])
+
+    <span class="token-comment"># Step 5: Write all 3 outputs to Excel buffers inside a ZIP</span>
+    zip_buffer = BytesIO()
+    <span class="token-keyword">with</span> zipfile.<span class="token-function">ZipFile</span>(zip_buffer, <span class="token-string">"w"</span>, zipfile.ZIP_DEFLATED) <span class="token-keyword">as</span> zf:
+        <span class="token-keyword">for</span> filename, dataframe <span class="token-keyword">in</span> [
+            (<span class="token-string">"duplicates.xlsx"</span>, df_duplicates),
+            (<span class="token-string">"unique.xlsx"</span>, df_unique),
+            (<span class="token-string">"duplicate_grouped.xlsx"</span>, df_single_col),
+        ]:
+            excel_buf = BytesIO()
+            dataframe.<span class="token-function">to_excel</span>(excel_buf, index=<span class="token-keyword">False</span>)
+            excel_buf.<span class="token-function">seek</span>(0)
+            zf.<span class="token-function">writestr</span>(filename, excel_buf.read())
+
+    zip_buffer.<span class="token-function">seek</span>(0)
+
+    stats = {
+        <span class="token-string">"total_rows"</span>: <span class="token-function">len</span>(df),
+        <span class="token-string">"duplicate_rows"</span>: <span class="token-function">len</span>(df_duplicates),
+        <span class="token-string">"unique_rows"</span>: <span class="token-function">len</span>(df_unique),
+    }
+
+    <span class="token-keyword">return</span> zip_buffer, stats</div>
+        </div>
+      </div>
+
+      <div class="grid-2" style="margin-top:1.5rem;">
+        <div class="glass-card">
+          <h3 style="margin-bottom:0.75rem;">Boolean Indexing</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;"><code>df[mask]</code> filters rows where the mask is True. This is vectorized — no Python for-loops needed. The mask is a Series of booleans aligned to the DataFrame index.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="margin-bottom:0.75rem;">reset_index(drop=True)</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">After filtering or dropping rows, the index may have gaps. reset_index rebuilds it from 0 to N-1. <code>drop=True</code> prevents the old index from becoming a new column.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="margin-bottom:0.75rem;">to_excel() Export</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;">Exports DataFrame to Excel format via openpyxl engine. Writing to BytesIO keeps everything in RAM. <code>index=False</code> omits the DataFrame index from the output file.</p>
+        </div>
+        <div class="glass-card">
+          <h3 style="margin-bottom:0.75rem;">Vectorized Operations</h3>
+          <p style="color:var(--text-muted);font-size:0.9rem;margin-bottom:1rem;"><code>astype(str).agg(",".join, axis=1)</code> converts every column to string and joins them row-wise using C-optimized loops. Doing this in pure Python would require iterating rows and columns manually.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CSV Processing Logic -->
+    <section id="flow" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Workflow</span>
+        <h2 class="section-title">CSV Processing Logic</h2>
+        <p class="section-subtitle">Step-by-step internal flow from user action to final download.</p>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-item">
+          <h4>1. User Uploads CSV</h4>
+          <p>User drags a CSV file onto the react-dropzone area or clicks to browse. The file is validated by MIME type (<code>text/csv</code>) and restricted to a single file (<code>multiple: false</code>).</p>
+        </div>
+        <div class="timeline-item">
+          <h4>2. Frontend Sends Request</h4>
+          <p>Axios creates a FormData object, appends the File, and POSTs to <code>/api/v1/csv/process</code> with <code>responseType: 'blob'</code> to receive binary data. A loading spinner renders during the async operation.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>3. Backend Receives File</h4>
+          <p>FastAPI's UploadFile descriptor streams the multipart data. The router validates the <code>.csv</code> extension and checks for empty files, raising HTTP 400 if invalid.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>4. Pandas Loads CSV</h4>
+          <p><code>pd.read_csv(BytesIO(file_bytes))</code> parses the CSV into a DataFrame. Pandas automatically infers column types, handles headers, and detects common delimiters.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>5. Duplicate Rows Identified</h4>
+          <p><code>df.duplicated(keep=False)</code> creates a boolean mask where every row that appears more than once is marked True. This captures the first AND subsequent occurrences.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>6. Clean Data Generated</h4>
+          <p><code>df.drop_duplicates(keep='first')</code> creates the unique dataset. A third grouped view collapses duplicate rows into comma-separated single-column strings for quick auditing.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>7. ZIP Archive Created</h4>
+          <p>Three Excel buffers are written into a single ZIP archive using Python's zipfile module with DEFLATE compression, reducing transfer size.</p>
+        </div>
+        <div class="timeline-item">
+          <h4>8. Response & Download</h4>
+          <p>StreamingResponse sends the ZIP blob back. Frontend extracts custom headers (X-Total-Rows, etc.), generates object URLs via <code>URL.createObjectURL()</code>, and renders download cards.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Folder Structure -->
+    <section id="structure" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Organization</span>
+        <h2 class="section-title">Folder Structure</h2>
+        <p class="section-subtitle">Clean separation of concerns across frontend and backend repositories.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card">
+          <h3 style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+            Frontend (React + Vite)
+          </h3>
+          <div class="tree">
+            <span class="tree-line"><span class="tree-branch">└──</span> <span class="tree-folder">src/</span></span>
+            <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-folder">components/</span></span>
+            <span class="tree-line">    <span class="tree-branch">│</span>   <span class="tree-branch">├──</span> <span class="tree-file">DropZoneArea.jsx</span></span>
+            <span class="tree-line">    <span class="tree-branch">│</span>   <span class="tree-branch">├──</span> <span class="tree-file">FileDownloads.jsx</span></span>
+            <span class="tree-line">    <span class="tree-branch">│</span>   <span class="tree-branch">├──</span> <span class="tree-file">Header.jsx</span></span>
+            <span class="tree-line">    <span class="tree-branch">│</span>   <span class="tree-branch">└──</span> <span class="tree-file">StatsDashboard.jsx</span></span>
+            <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-folder">assets/</span></span>
+            <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-file">App.jsx</span> <span class="tree-ext">← Parent state container</span></span>
+            <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-file">App.css</span> <span class="tree-ext">← Component styles</span></span>
+            <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-file">index.css</span> <span class="tree-ext">← Global theme & variables</span></span>
+            <span class="tree-line">    <span class="tree-branch">└──</span> <span class="tree-file">main.jsx</span> <span class="tree-ext">← Entry point, ReactDOM</span></span>
+            <span class="tree-line"><span class="tree-branch">├──</span> <span class="tree-file">index.html</span></span>
+            <span class="tree-line"><span class="tree-branch">├──</span> <span class="tree-file">vite.config.js</span> <span class="tree-ext">← Build config</span></span>
+            <span class="tree-line"><span class="tree-branch">└──</span> <span class="tree-file">package.json</span></span>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <h3 style="margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            Backend (FastAPI)
+          </h3>
+          <div class="tree">
+            <span class="tree-line"><span class="tree-branch">└──</span> <span class="tree-folder">app/</span></span>
+            <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-folder">routers/</span></span>
+            <span class="tree-line">    <span class="tree-branch">│</span>   <span class="tree-branch">└──</span> <span class="tree-file">csv_router.py</span></span>
+            <span class="tree-line">    <span class="tree-branch">├──</span> <span class="tree-folder">services/</span></span>
+            <span class="tree-line">    <span class="tree-branch">│</span>   <span class="tree-branch">└──</span> <span class="tree-file">csv_service.py</span></span>
+            <span class="tree-line">    <span class="tree-branch">└──</span> <span class="tree-folder">schemas/</span></span>
+            <span class="tree-line">    <span class="tree-branch">    </span><span class="tree-branch">└──</span> <span class="tree-file">response_schema.py</span></span>
+            <span class="tree-line"><span class="tree-branch">├──</span> <span class="tree-file">main.py</span> <span class="tree-ext">← App factory, CORS</span></span>
+            <span class="tree-line"><span class="tree-branch">├──</span> <span class="tree-file">requirements.txt</span></span>
+            <span class="tree-line"><span class="tree-branch">└──</span> <span class="tree-file">Dockerfile</span> <span class="tree-ext">← (optional) container build</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- API Documentation -->
+    <section id="api" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Reference</span>
+        <h2 class="section-title">API Documentation</h2>
+        <p class="section-subtitle">Complete specification for the CSV processing endpoint.</p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap;">
+          <span class="method-post">POST</span>
+          <code style="font-size:1.1rem;color:var(--text-main);">/api/v1/csv/process</code>
+        </div>
+
+        <h4 style="margin-bottom:0.75rem;color:var(--text-main);">Request</h4>
+        <div class="code-block" style="margin-bottom:1.5rem;">
+          <div class="code-header"><span class="code-lang">http</span></div>
+          <div class="code-content">Content-Type: multipart/form-data
+
+Body (form-data):
+  file: &lt;CSV_FILE&gt;  <span class="token-comment"># Required. Must end with .csv</span></div>
+        </div>
+
+        <h4 style="margin-bottom:0.75rem;color:var(--text-main);">Response</h4>
+        <div class="code-block" style="margin-bottom:1.5rem;">
+          <div class="code-header"><span class="code-lang">http</span></div>
+          <div class="code-content">Content-Type: application/zip
+Content-Disposition: inline; filename=processed_output.zip
+X-Total-Rows: 15420
+X-Duplicate-Rows: 1840
+X-Unique-Rows: 13580
+
+Body: &lt;BINARY_ZIP_DATA&gt;</div>
+        </div>
+
+        <h4 style="margin-bottom:0.75rem;color:var(--text-main);">cURL Example</h4>
+        <div class="code-block">
+          <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copyCode(this)">Copy</button></div>
+          <div class="code-content">curl -X POST <span class="token-string">"https://your-api.onrender.com/api/v1/csv/process"</span> \
+  -F <span class="token-string">"file=@data.csv"</span> \
+  -H <span class="token-string">"Accept: application/zip"</span> \
+  --output result.zip</div>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="glass-card" style="text-align:center;">
+          <div style="font-size:2rem;font-weight:800;color:var(--accent);margin-bottom:0.5rem;">200</div>
+          <h4 style="margin-bottom:0.5rem;">Success</h4>
+          <p style="font-size:0.85rem;color:var(--text-muted);">ZIP archive returned with 3 Excel files and stat headers.</p>
+        </div>
+        <div class="glass-card" style="text-align:center;">
+          <div style="font-size:2rem;font-weight:800;color:#f59e0b;margin-bottom:0.5rem;">400</div>
+          <h4 style="margin-bottom:0.5rem;">Bad Request</h4>
+          <p style="font-size:0.85rem;color:var(--text-muted);">Invalid file type or empty file uploaded.</p>
+        </div>
+        <div class="glass-card" style="text-align:center;">
+          <div style="font-size:2rem;font-weight:800;color:#ef4444;margin-bottom:0.5rem;">500</div>
+          <h4 style="margin-bottom:0.5rem;">Server Error</h4>
+          <p style="font-size:0.85rem;color:var(--text-muted);">Pandas parsing failure or unexpected exception.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interview Q&A -->
+    <section id="interview" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Career Prep</span>
+        <h2 class="section-title">Interview Questions & Answers</h2>
+        <p class="section-subtitle">Three answer depths for every question: beginner, interview-ready, and professional.</p>
+      </div>
+
+      <h3 style="margin:2rem 0 1rem;font-size:1.4rem;">Frontend</h3>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          What is React?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level">
+            <h5>Beginner</h5>
+            <p>React is a JavaScript library for building user interfaces. It lets you create reusable pieces of UI called components.</p>
+          </div>
+          <div class="answer-level">
+            <h5>Interview Answer</h5>
+            <p>React is a declarative component-based library that uses a virtual DOM to efficiently update the UI. It unidirectional data flow makes state predictable.</p>
+          </div>
+          <div class="answer-level">
+            <h5>Professional</h5>
+            <p>React is a declarative UI library that abstracts the DOM via a reconciliation algorithm (Fiber). It promotes composition over inheritance, uses a unidirectional data flow, and enables concurrent rendering in React 19. In this project, functional components with hooks replaced class-based logic for cleaner side-effect management.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          Why Vite over Create React App?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Vite is faster because it uses native browser ES modules instead of bundling everything during development.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Vite leverages esbuild for pre-bundling dependencies and Rollup for production, offering instant HMR and significantly faster cold starts than webpack-based CRA.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Vite uses a dev server powered by native ESM, avoiding the heavy bundling step that CRA's webpack performs on every file change. For this project, Vite's HMR allowed instant feedback when tweaking CSS glassmorphism variables, and its Rollup production build produced smaller, tree-shaken chunks ideal for Netlify's CDN edge caching.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          What is Axios and why use it?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Axios is a library that makes HTTP requests from the browser easier than the native fetch API.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Axios provides automatic JSON transformation, request/response interceptors, timeout handling, and wider browser support compared to fetch.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Axios offers a promise-based HTTP client with automatic content-type negotiation, XSRF protection, and the ability to track upload progress. In this project, Axios was essential because fetch() does not natively support tracking upload progress or easily setting responseType to 'blob' for binary ZIP downloads.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          Difference between props and state?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Props are data passed from parent to child. State is data managed inside a component that can change.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Props are immutable inputs from parent components; state is mutable data local to a component that triggers re-renders when updated via setState.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Props create a unidirectional data flow (parent → child) and are read-only. State is encapsulated and managed within the component owning it. In this project, App.jsx holds the files, stats, and loading state, while child components like StatsDashboard receive stats as props, ensuring a single source of truth and predictable UI updates.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          Explain async/await in this project.
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Async/await lets you write code that waits for slow operations (like API calls) without freezing the app.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Async/await is syntactic sugar over Promises that makes asynchronous code look synchronous, improving readability and error handling with try/catch.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Async/await desugars to Promise chains but provides cleaner stack traces and sequential readability. In the upload handler, we await the Axios POST, then await header extraction, then await blob URL generation — all while the React event loop remains unblocked, allowing the loading spinner to animate smoothly via CSS transitions.</p></div>
+        </div>
+      </div>
+
+      <h3 style="margin:2rem 0 1rem;font-size:1.4rem;">Backend</h3>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          What is FastAPI?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>FastAPI is a Python framework for building APIs quickly with automatic documentation.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>FastAPI is an async Python web framework that uses type hints for automatic request validation, serialization, and OpenAPI/Swagger docs generation.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>FastAPI is built on Starlette (ASGI) and Pydantic. It achieves near-Node.js performance by leveraging async/await and type-driven validation. In this project, FastAPI's UploadFile and File(...) descriptors automatically handled multipart parsing, while Pydantic models in response_schema.py enforced contract boundaries between the service layer and router.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          Why FastAPI over Flask?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>FastAPI is faster and automatically creates API documentation pages for you.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>FastAPI offers native async support, automatic validation via Pydantic, and generates OpenAPI docs without extra libraries like Flask-RESTful or marshmallow.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>While Flask is synchronous by default (requiring gevent/gunicorn for async), FastAPI is async-first via Starlette and Uvicorn. For data-processing endpoints that may involve I/O (reading files, streaming responses), FastAPI's async request handlers prevent thread pool exhaustion. Additionally, type-hint validation eliminated an entire class of manual validation code that Flask would require.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          What is CORS and why did you need it?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>CORS lets a website on one domain request data from another domain safely.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Cross-Origin Resource Sharing is a browser security mechanism. Servers must explicitly allow origins via Access-Control-Allow-Origin headers.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Browsers enforce the Same-Origin Policy, blocking frontend JS from reading cross-origin responses unless the server opts in via CORS headers. Since the frontend is on Netlify (domain A) and the API is on Render (domain B), FastAPI's CORSMiddleware injects the necessary preflight and actual response headers. We explicitly whitelisted the Netlify origin rather than using <code>*</code> to follow the principle of least privilege.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          What is middleware?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Middleware is code that runs before your route handler processes a request.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Middleware intercepts requests and responses, allowing cross-cutting concerns like logging, authentication, and CORS to be handled centrally.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Middleware implements the chain-of-responsibility pattern. In FastAPI, middleware wraps every request: it can modify the request on ingress and the response on egress. Our CORSMiddleware runs on every request, injecting headers without polluting individual route handlers. This separation of concerns keeps business logic pure.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          Explain Uvicorn.
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Uvicorn is the server that runs your FastAPI app, similar to how Apache runs PHP sites.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Uvicorn is an ASGI server built on uvloop and httptools. It serves Python async applications with high concurrency using an event loop.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Uvicorn implements the ASGI specification, enabling it to serve FastAPI/Starlette apps with HTTP/1.1 and WebSocket support. Unlike WSGI servers (gunicorn with sync workers), Uvicorn handles many concurrent connections on a single process using asyncio. On Render, we run <code>uvicorn main:app --host 0.0.0.0 --port 10000</code>, binding to the port provided by the platform's environment.</p></div>
+        </div>
+      </div>
+
+      <h3 style="margin:2rem 0 1rem;font-size:1.4rem;">Pandas</h3>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          What is Pandas?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Pandas is a Python library that makes it easy to work with tables of data, like Excel sheets.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Pandas is a data manipulation library built on NumPy. It provides DataFrames and Series for structured data operations with vectorized performance.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Pandas provides high-level abstractions (DataFrame, Series) over NumPy's ndarray, offering labeled axes, heterogeneous column types, and alignment-aware operations. In this project, Pandas replaced what would have been hundreds of lines of Python list/dict logic with concise, C-optimized method chains that process 10k+ rows in milliseconds.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          What is a DataFrame?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>A DataFrame is a table with rows and columns, where each column can have a different data type.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>A DataFrame is a 2D labeled data structure with an index (rows) and columns. It supports mixed types per column and vectorized operations.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Under the hood, a DataFrame is a dict of Series (1D ndarrays) sharing a common Index. This columnar storage enables block-based operations: applying a function to one column touches contiguous memory, maximizing CPU cache hits. In our service, the entire CSV becomes a single DataFrame object, allowing us to apply boolean masks and deduplication across millions of cells in a single expression.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          duplicated() vs drop_duplicates()?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>duplicated() tells you which rows are duplicates. drop_duplicates() removes them and gives you the clean data.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>duplicated() returns a boolean mask. drop_duplicates() returns a new DataFrame with duplicate rows removed. Both accept a 'keep' parameter.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>duplicated() is a predicate function returning a boolean Series aligned to the original index. It does not mutate data. drop_duplicates() is a filtering function returning a subset. In our pipeline, we use duplicated(keep=False) to capture every occurrence of duplicates for the audit file, while drop_duplicates(keep='first') produces the clean unique dataset. Using both together gives users complete visibility and a cleaned export.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          How does read_csv() work?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>It reads a CSV file and turns it into a DataFrame table that Pandas can manipulate.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>read_csv() parses delimited text into a DataFrame, inferring dtypes, handling headers, and supporting various separators, encodings, and na_values.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Pandas' read_csv() is a Cython-optimized parser. It memory-maps large files when possible, uses a tokenizer to split lines, and infers column dtypes in a two-pass process. By passing BytesIO instead of a filepath, we avoid filesystem overhead entirely — the parser reads directly from the in-memory buffer, which is critical for serverless backends where disk space and IOPS are limited.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          Why use Pandas for CSV processing?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>It's much faster than writing your own Python loops to check for duplicates.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Pandas provides vectorized, C-optimized operations for filtering, grouping, and deduplication that outperform pure Python by orders of magnitude.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Pandas leverages BLAS/LAPACK and Cython for vectorized operations. A duplicate check that would require O(n²) nested loops in Python is O(n) in Pandas via hashing. Additionally, Pandas' unified I/O interface (read_csv → process → to_excel) eliminates format conversion boilerplate. For this project, the entire processing pipeline fits in ~30 lines of Pandas code versus 200+ lines of standard library Python.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          How to handle null values in Pandas?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Use df.dropna() to remove rows with missing values, or df.fillna(0) to replace them with zero.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Pandas uses isna()/notna() for detection, dropna() for removal, and fillna() for imputation. You can target specific columns or strategies (mean, median).</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Null handling strategy depends on business context. df.isna().sum() gives a null audit. df.dropna(subset=['email']) removes rows critical for deduplication. df.fillna(method='ffill') propagates last valid observation. In production pipelines, I would add a null-reporting step before cleaning so data owners can audit what was removed or imputed.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          What are vectorized operations?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>Operations that work on entire columns at once instead of looping through rows one by one.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Vectorized operations apply functions to entire arrays via C/Fortran loops under the hood, eliminating slow Python iteration.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Vectorization delegates iteration to compiled C code operating on contiguous memory blocks. When we call df.duplicated(), Pandas calls a Cythonized groupby-hash algorithm that runs entirely in C-land. The Python interpreter is only involved once to return the result. This avoids Python's GIL and interpreter overhead, yielding 10-100x speedups. In our grouped column creation, astype(str).agg(",".join, axis=1) vectorizes string conversion and aggregation across 10k rows without a single Python for-loop.</p></div>
+        </div>
+      </div>
+
+      <div class="qa-item">
+        <div class="qa-question" onclick="toggleQA(this)">
+          How is Pandas memory efficient?
+          <svg class="qa-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="qa-answer">
+          <div class="answer-level"><h5>Beginner</h5><p>It stores data in compact arrays and lets you choose smaller number types to save RAM.</p></div>
+          <div class="answer-level"><h5>Interview Answer</h5><p>Pandas uses NumPy arrays (homogeneous, contiguous memory) and supports categorical dtypes, sparse structures, and chunked reading to minimize footprint.</p></div>
+          <div class="answer-level"><h5>Professional</h5><p>Pandas stores columns as contiguous C arrays (ndarrays), not Python objects. Int64 columns use 8 bytes per cell, not 28+ bytes like Python int objects. Categorical dtype stores repeated strings as integer codes (crucial for duplicate detection where values repeat). For massive files, read_csv(chunksize=...) processes data in fragments. In our deployment, processing stays within Render's free tier 512MB RAM because Pandas' in-memory representation is far denser than native Python structures.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Challenges -->
+    <section id="challenges" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Real Experience</span>
+        <h2 class="section-title">Challenges Faced</h2>
+        <p class="section-subtitle">Problems encountered during development and how they were solved.</p>
+      </div>
+
+      <div class="grid-2">
+        <div class="glass-card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(239,68,68,0.1);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            </div>
+            <h3 style="font-size:1.1rem;">CORS Issues</h3>
+          </div>
+          <p style="color:var(--text-muted);font-size:0.9rem;">During local development, the frontend on localhost:5173 could not communicate with the backend on localhost:8000. Browsers blocked the request due to the Same-Origin Policy. Solved by adding FastAPI's CORSMiddleware with explicit origin whitelisting, then restricting it to the production Netlify domain before deployment.</p>
+        </div>
+
+        <div class="glass-card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(245,158,11,0.1);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <h3 style="font-size:1.1rem;">Render Cold Starts</h3>
+          </div>
+          <p style="color:var(--text-muted);font-size:0.9rem;">Render's free tier spins down after 15 minutes of inactivity. The first request after idle takes 20-30 seconds to wake the container. Mitigated by adding a loading state with explanatory text in the frontend so users know the server is waking up, and considering a ping cron job for production use.</p>
+        </div>
+
+        <div class="glass-card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(99,102,241,0.1);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <h3 style="font-size:1.1rem;">CSV Parsing Errors</h3>
+          </div>
+          <p style="color:var(--text-muted);font-size:0.9rem;">Some CSVs had irregular quoting, mixed line endings (CRLF vs LF), or missing headers. Pandas' read_csv() with default settings would throw ParserError. Solved by wrapping the read in a try/except block and returning a 500 error with a descriptive message, advising users to check file encoding (UTF-8) and delimiter consistency.</p>
+        </div>
+
+        <div class="glass-card">
+          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,185,129,0.1);display:flex;align-items:center;justify-content:center;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3 style="font-size:1.1rem;">Localhost vs Production API</h3>
+          </div>
+          <p style="color:var(--text-muted);font-size:0.9rem;">Switching from localhost:8000 to the production Render URL required environment-based API base URLs. Implemented by storing the API URL in a config constant and using Vite's import.meta.env for potential future environment variable injection.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Deployment -->
+    <section id="deployment" class="reveal">
+      <div class="section-header">
+        <span class="section-label">DevOps</span>
+        <h2 class="section-title">Deployment Architecture</h2>
+        <p class="section-subtitle">How the application moves from code to production.</p>
+      </div>
+
+      <div class="glass-card" style="margin-bottom:1.5rem;">
+        <div class="timeline">
+          <div class="timeline-item">
+            <h4>1. GitHub Push Flow</h4>
+            <p>Code is committed to a GitHub repository with separate folders for frontend and backend. Each push triggers webhooks to connected deployment platforms.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>2. Netlify Frontend Deploy</h4>
+            <p>Netlify connects to the frontend folder. It runs <code>npm ci && npm run build</code> using Vite, producing optimized static assets in <code>dist/</code>. Auto-deploys on every push to main.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>3. Render Backend Deploy</h4>
+            <p>Render pulls the backend, installs requirements.txt, and starts Uvicorn: <code>uvicorn main:app --host 0.0.0.0 --port $PORT</code>. Environment variables (CORS origins) are configured in the Render dashboard.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>4. Production URL Setup</h4>
+            <p>The Netlify site uses a custom domain or default .netlify.app URL. The Render API URL is hardcoded in the frontend config (or injected via env vars). Both use HTTPS by default.</p>
+          </div>
+          <div class="timeline-item">
+            <h4>5. Auto Deployment</h4>
+            <p>Any commit to the main branch automatically rebuilds and redeploys both frontend and backend. Rollbacks are available via Git history in both platforms.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Future Improvements -->
+    <section id="future" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Roadmap</span>
+        <h2 class="section-title">Future Improvements</h2>
+        <p class="section-subtitle">Planned enhancements to make this a production-grade SaaS.</p>
+      </div>
+
+      <div class="grid-3">
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--primary),var(--primary-hover));display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.5rem;font-size:1.1rem;">Authentication</h3>
+            <p style="color:var(--text-muted);font-size:0.9rem;">JWT-based auth with login/signup. Track user-specific upload history and quota limits.</p>
+          </div>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--secondary),#be185d);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.5rem;font-size:1.1rem;">Charts & Dashboard</h3>
+            <p style="color:var(--text-muted);font-size:0.9rem;">Visualize duplicate patterns, column distributions, and data quality scores using Recharts or D3.</p>
+          </div>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#059669);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M16 8.5v.01"/><path d="M8.5 15.5v.01"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.5rem;font-size:1.1rem;">AI-Based Insights</h3>
+            <p style="color:var(--text-muted);font-size:0.9rem;">Integrate LLM APIs to suggest data cleaning rules, detect anomalies, and auto-generate column descriptions.</p>
+          </div>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#f59e0b,#d97706);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.5rem;font-size:1.1rem;">Database Integration</h3>
+            <p style="color:var(--text-muted);font-size:0.9rem;">Store processed file metadata in PostgreSQL. Enable user history, favorites, and batch re-processing.</p>
+          </div>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#8b5cf6,#7c3aed);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 20v-6M6 20V10M18 20V4"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.5rem;font-size:1.1rem;">Export Analytics</h3>
+            <p style="color:var(--text-muted);font-size:0.9rem;">Track which columns have the most duplicates, duplicate frequency histograms, and data quality trends over time.</p>
+          </div>
+        </div>
+        <div class="glass-card tilt-card">
+          <div class="tilt-inner">
+            <div style="width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,#06b6d4,#0891b2);display:flex;align-items:center;justify-content:center;margin-bottom:1rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            </div>
+            <h3 style="margin-bottom:0.5rem;font-size:1.1rem;">Enhanced Security</h3>
+            <p style="color:var(--text-muted);font-size:0.9rem;">File size limits, virus scanning via ClamAV integration, and encrypted at-rest storage for sensitive CSVs.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills -->
+    <section id="skills" class="reveal">
+      <div class="section-header">
+        <span class="section-label">Competencies</span>
+        <h2 class="section-title">Skills Demonstrated</h2>
+        <p class="section-subtitle">Technical and soft skills proven through this project.</p>
+      </div>
+
+      <div class="grid-4">
+        <div class="glass-card skill-card tilt-card">
+          <div class="tilt-inner">
+            <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+            <h3>Frontend Dev</h3>
+            <p>React 19, Vite, JSX, CSS variables, glassmorphism, responsive grids, dropzone UX.</p>
+          </div>
+        </div>
+        <div class="glass-card skill-card tilt-card">
+          <div class="tilt-inner">
+            <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+            <h3>Backend Dev</h3>
+            <p>FastAPI, Python type hints, async request handling, router modularity, error boundaries.</p>
+          </div>
+        </div>
+        <div class="glass-card skill-card tilt-card">
+          <div class="tilt-inner">
+            <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg></div>
+            <h3>API Integration</h3>
+            <p>Axios, multipart uploads, blob handling, custom headers, CORS configuration, streaming.</p>
+          </div>
+        </div>
+        <div class="glass-card skill-card tilt-card">
+          <div class="tilt-inner">
+            <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg></div>
+            <h3>Data Processing</h3>
+            <p>Pandas vectorization, boolean indexing, DataFrame operations, Excel export, ZIP compression.</p>
+          </div>
+        </div>
+        <div class="glass-card skill-card tilt-card">
+          <div class="tilt-inner">
+            <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+            <h3>Deployment</h3>
+            <p>Netlify static hosting, Render web services, Git-based CI/CD, environment configuration.</p>
+          </div>
+        </div>
+        <div class="glass-card skill-card tilt-card">
+          <div class="tilt-inner">
+            <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+            <h3>Problem Solving</h3>
+            <p>CORS debugging, Render cold starts, CSV edge cases, memory-efficient processing.</p>
+          </div>
+        </div>
+        <div class="glass-card skill-card tilt-card">
+          <div class="tilt-inner">
+            <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg></div>
+            <h3>Debugging</h3>
+            <p>Browser dev tools, network tab analysis, server logs, Pandas exception handling, HTTP status tracing.</p>
+          </div>
+        </div>
+        <div class="glass-card skill-card tilt-card">
+          <div class="tilt-inner">
+            <div class="skill-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg></div>
+            <h3>CSV Handling</h3>
+            <p>Encoding detection, delimiter inference, header validation, large file streaming, format conversion.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-links">
+        <a href="#" target="_blank">LinkedIn</a>
+        <a href="#" target="_blank">GitHub</a>
+        <a href="mailto:email@example.com">Email</a>
+      </div>
+      <p>Full Stack Developer &bull; React &bull; FastAPI &bull; Pandas</p>
+      <div class="footer-stack">
+        <span class="footer-badge">React 19</span>
+        <span class="footer-badge">Vite</span>
+        <span class="footer-badge">Axios</span>
+        <span class="footer-badge">FastAPI</span>
+        <span class="footer-badge">Pandas</span>
+        <span class="footer-badge">Netlify</span>
+        <span class="footer-badge">Render</span>
+      </div>
+      <p style="margin-top:1.5rem;opacity:0.6;">Built with React, FastAPI, and Pandas &bull; 2024</p>
+    </footer>
+
+  </div>
+
+  <script>
+    // 3D Particle Canvas
+    const canvas = document.getElementById('hero-canvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+    const particleCount = 120;
+    let mouseX = 0, mouseY = 0;
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    class Particle {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        this.x = (Math.random() - 0.5) * width * 2;
+        this.y = (Math.random() - 0.5) * height * 2;
+        this.z = Math.random() * 1500 + 500;
+        this.vz = -1.5 - Math.random() * 2;
+        this.size = Math.random() * 2 + 0.5;
+      }
+      update() {
+        this.z += this.vz;
+        if (this.z < 10) this.reset();
+      }
+      project() {
+        const fov = 400;
+        const scale = fov / (fov + this.z);
+        const x2d = this.x * scale + width / 2 + (mouseX - width/2) * 0.02 * scale;
+        const y2d = this.y * scale + height / 2 + (mouseY - height/2) * 0.02 * scale;
+        return { x: x2d, y: y2d, scale, alpha: Math.min(scale * 0.8, 1) };
+      }
+    }
+
+    for (let i = 0; i < particleCount; i++) particles.push(new Particle());
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animate() {
+      ctx.fillStyle = 'rgba(3, 7, 18, 0.25)';
+      ctx.fillRect(0, 0, width, height);
+
+      particles.forEach((p, i) => {
+        p.update();
+        const proj = p.project();
+        const color = i % 3 === 0 ? '99, 102, 241' : i % 3 === 1 ? '236, 72, 153' : '139, 92, 246';
+        ctx.beginPath();
+        ctx.arc(proj.x, proj.y, p.size * proj.scale, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${color}, ${proj.alpha * 0.6})`;
+        ctx.fill();
+      });
+
+      // Connect nearby particles
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const p1 = particles[i].project();
+          const p2 = particles[j].project();
+          const dx = p1.x - p2.x;
+          const dy = p1.y - p2.y;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          if (dist < 100) {
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.strokeStyle = `rgba(99, 102, 241, ${0.1 * (1 - dist/100)})`;
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+          }
+        }
+      }
+
+      requestAnimationFrame(animate);
+    }
+    animate();
+
+    // Scroll Reveal
+    const revealElements = document.querySelectorAll('.reveal');
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+
+    revealElements.forEach(el => revealObserver.observe(el));
+
+    // 3D Tilt Effect
+    document.querySelectorAll('.tilt-card').forEach(card => {
+      const inner = card.querySelector('.tilt-inner');
+      if (!inner) return;
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const rotateX = (y - centerY) / 20;
+        const rotateY = (centerX - x) / 20;
+        inner.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        inner.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+      });
+    });
+
+    // Q&A Accordion
+    function toggleQA(el) {
+      const item = el.parentElement;
+      const wasActive = item.classList.contains('active');
+      document.querySelectorAll('.qa-item').forEach(i => i.classList.remove('active'));
+      if (!wasActive) item.classList.add('active');
+    }
+
+    // Mobile Menu
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('active');
+    }
+
+    // Copy Code
+    function copyCode(btn) {
+      const code = btn.closest('.code-block').querySelector('.code-content').innerText;
+      navigator.clipboard.writeText(code).then(() => {
+        const original = btn.innerText;
+        btn.innerText = 'Copied!';
+        setTimeout(() => btn.innerText = original, 2000);
+      });
+    }
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {   
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>

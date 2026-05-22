@@ -585,23 +585,6 @@ app.add_middleware(
 | **⚡ Background Processing** | Celery + Redis for large file async processing with progress tracking | Low |
 | **☁️ Cloud Storage** | S3 integration for persistent file storage beyond ZIP downloads | Low |
 
----
-
-## 📸 Screenshots & Demo
-
-### 🎨 Frontend Interface
-
-| Feature | Screenshot |
-|---------|------------|
-| **Upload Zone** | ![Upload](docs/screenshots/upload.png) |
-| **Processing Stats** | ![Stats](docs/screenshots/stats.png) |
-| **Download Cards** | ![Downloads](docs/screenshots/downloads.png) |
-
-### 🎬 Demo GIF
-
-![Demo GIF](docs/demo.gif)
-
-> **Note:** Add your actual screenshots to `docs/screenshots/` and update the paths above.
 
 ---
 
@@ -609,13 +592,13 @@ app.add_middleware(
 
 <div align="center">
 
-**Your Name**
+**subburathinam M**
 
 Full Stack Developer | React · FastAPI · Pandas
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yourname)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/yourname)
-[![Portfolio](https://img.shields.io/badge/Portfolio-6366f1?style=for-the-badge&logo=google-chrome&logoColor=white)](https://yourportfolio.com)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/subburathinam-M)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/subburathinam22/)
+[![Portfolio](https://img.shields.io/badge/Portfolio-6366f1?style=for-the-badge&logo=google-chrome&logoColor=white)](https://subburathinam-m.github.io/MyPortfolio/#)
 
 </div>
 
@@ -638,10 +621,4 @@ If you find this project helpful, please give it a **⭐ star** on GitHub!
 🚀 Built with ❤️ using **React**, **FastAPI**, and **Pandas**
 
 </div>
-'''
 
-with open('/mnt/agents/output/README.md', 'w', encoding='utf-8') as f:
-    f.write(readme_content)
-
-print("README.md created successfully!")
-print(f"Total size: {len(readme_content)} characters")
